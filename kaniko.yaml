@@ -1,0 +1,23 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kaniko-builder
+spec:
+  containers:
+    - name: kaniko
+      image: gcr.io/kaniko-project/executor:latest
+      args: ["--context=git://github.com/Harsha21397/myfirstapp.git",
+             "--destination=880952631736.dkr.ecr.ap-south-1.amazonaws.com/springboot:latest",
+             "--dockerfile=Dockerfile"]
+      volumeMounts:
+        - name: kaniko-secret
+          mountPath: /kaniko/.docker
+  restartPolicy: Never
+  volumes:
+    - name: kaniko-secret
+      secret:
+        secretName: ecrcred
+        items:
+          - key: .dockerconfigjson
+            path: config.json
